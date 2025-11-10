@@ -4,11 +4,10 @@ import { ScrapingService } from './scraping.service';
 
 @Controller('scrape')
 export class ScrapingController {
-    constructor(private readonly svc: ScrapingService) { }
+  constructor(private readonly svc: ScrapingService) {}
 
-    @Post()
-    async scrape(@Body() dto: ScrapeRequestDto) {
-        return this.svc.scrapeBingResults(dto);
-    }
-
+  @Post()
+  async scrape(@Body() dto: ScrapeRequestDto) {
+    return this.svc.scrapeBingResults(dto);
+  }
 }

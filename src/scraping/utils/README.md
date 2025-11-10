@@ -26,6 +26,18 @@ Responsável por fazer requisições HTTP/HTTPS com:
 const html = await HttpClient.fetchHtml('https://www.bing.com/search?q=test');
 ```
 
+Modo navegador antigo (headers legacy):
+```typescript
+// Usa um perfil de headers semelhante ao Chrome 62, sem client hints modernos
+const html = await HttpClient.fetchHtml('https://www.google.com/search?q=test', 5, { legacy: true });
+
+// Também é possível sobrescrever/adicionar headers específicos
+const htmlWithCustom = await HttpClient.fetchHtml('https://www.google.com/search?q=test', 5, {
+  legacy: true,
+  extraHeaders: { Referer: 'https://www.google.com/' }
+});
+```
+
 ## CaptchaDetector
 
 Detecta páginas de CAPTCHA ou bloqueios através de:
