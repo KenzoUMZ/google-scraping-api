@@ -43,9 +43,9 @@ export class HttpClient {
                 // Configura stream de descompressão se necessário
                 const stream = this.createDecompressionStream(res);
 
-                let data = '';
+                const chunks: Buffer[] = [];
                 stream.on('data', (chunk: Buffer) => {
-                    data += chunk.toString('utf-8');
+                    chunks.push(chunk);
                 });
 
                 stream.on('end', () => {
@@ -56,6 +56,8 @@ export class HttpClient {
                             ),
                         );
                     }
+                    const buffer = Buffer.concat(chunks);
+                    const data = buffer.toString('utf-8');
                     resolve(data);
                 });
 
