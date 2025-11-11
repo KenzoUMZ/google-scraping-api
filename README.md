@@ -1,14 +1,14 @@
-## Project setup
+## Configuração do Projeto
 
 ```bash
 pnpm install
 ```
 
-## Prerequisites
+## Pré-requisitos
 
-Before running the project, make sure you have Node.js and pnpm installed.
+Antes de executar o projeto, certifique-se de que você tenha o Node.js e o pnpm instalados.
 
-Recommended installation methods:
+Métodos de instalação recomendados:
 
 - macOS (Homebrew):
 
@@ -21,50 +21,63 @@ brew install node
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.4/install.sh | bash
-# Then either reopen your shell or source nvm and install the LTS release:
+# Em seguida, ou reinicie seu shell ou carregue o nvm e instale a versão LTS:
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/nvm.sh" ] && \.
+"$NVM_DIR/nvm.sh"
 nvm install --lts
 nvm use --lts
 ```
 
-- Windows: use nvm-windows (https://github.com/coreybutler/nvm-windows) or install the official Node.js installer from https://nodejs.org/.
+- Windows: use nvm-windows (https://github.com/coreybutler/nvm-windows) ou instale o instalador oficial do Node.js em https://nodejs.org/.
 
-pnpm installation (two options):
+Instalação do pnpm (duas opções):
 
-- Prefer using Corepack (shipped with newer Node versions):
+- Prefira usar o Corepack (embarcado com versões mais novas do Node):
 
 ```bash
 corepack enable
 corepack prepare pnpm@latest --activate
 ```
 
-- Or install via npm (global):
+- Ou instale via npm (global):
 
 ```bash
 npm install -g pnpm
 ```
 
-After installing Node and pnpm, run the project setup:
+Após instalar o Node e o pnpm, execute a configuração do projeto:
 
 ```bash
 pnpm install
 ```
 
-## Compile and run the project
+## Compilar e executar o projeto
 
 ```bash
-# development
+# desenvolvimento
 pnpm dev
 ```
 
-## Run tests
+## Executar testes
 
 ```bash
-# unit tests
+# testes unitários
 pnpm run test
 ```
 
-Notes:
-- Unit tests are located in `src/**.spec.ts` (Jest is configured with `rootDir: src`).
-- To avoid concurrency issues in tests that start a local server, you can run: `pnpm test --runInBand`.
+Notas:
+- Os testes unitários estão localizados em `src/**.spec.ts` (Jest está configurado com `rootDir: src`).
+- Para evitar problemas de concorrência em testes que iniciam um servidor local, você pode executar: `pnpm test --runInBand`.
+
+## Clonando o repositório
+
+Para começar, clone este repositório:
+
+```bash
+git clone https://github.com/KenzoUMZ/bing_scraping_api.git
+```
+
+## Acesso ao Swagger
+
+Ao rodar o backend, o Swagger fica exposto e pode ser acessado através da URL: `http://0.0.0.0:8080/api`. Isso permite visualizar e interagir com a API de forma mais fácil e intuitiva.
