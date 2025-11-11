@@ -1,6 +1,6 @@
 import {
-    SEARCH_ENGINE_HOSTNAME,
-    SEARCH_ENGINE_RESULT_ITEM_CLASS,
+  SEARCH_ENGINE_HOSTNAME,
+  SEARCH_ENGINE_RESULT_ITEM_CLASS,
 } from '../../config';
 import { SearchResultDto } from '../dto/scrape-response.dto';
 
@@ -57,9 +57,11 @@ export class HtmlParser {
     if (!url || this.isEngineRedirectUrl(url)) {
       const citeMatch = /<cite[^>]*>([\s\S]*?)<\/cite>/i.exec(block);
       if (citeMatch) {
-        const domain = this.extractDomainFromCite(citeMatch[1]);
-        if (domain) {
-          url = 'https://' + domain;
+        const citeUrl = this.cleanText(citeMatch[1]);
+        if (citeUrl && !citeUrl.startsWith('http')) {
+          url = 'https://' + citeUrl;
+        } else if (citeUrl) {
+          url = citeUrl;
         }
       }
     }
@@ -122,59 +124,60 @@ export class HtmlParser {
   private static cleanUrl(url: string): string {
     url = url.trim();
 
+    // Corrige apenas entidades HTML dentro da URL
+    url = url
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&apos;/g, "'");
+
+    // Se for um redirecionamento do mecanismo de busca, tenta extrair o link real
     if (this.isEngineRedirectUrl(url)) {
       try {
         const urlObj = new URL(url);
-
-        const uParam = urlObj.searchParams.get('u');
-        if (uParam) {
-          try {
-            const decoded = decodeURIComponent(uParam);
-            if (decoded.startsWith('http')) {
+        const possibleParams = ['u', 'url', 'q'];
+        for (const param of possibleParams) {
+          const paramValue = urlObj.searchParams.get(param);
+          if (paramValue) {
+            const decoded = decodeURIComponent(paramValue);
+            // Retorna somente se for um link HTTP(s) válido
+            if (/^https?:\/\//i.test(decoded)) {
               return decoded;
-            }
-          } catch {
-            if (uParam.startsWith('http')) {
-              return uParam;
             }
           }
         }
-
-        const urlParam = urlObj.searchParams.get('url');
-        if (urlParam && urlParam.startsWith('http')) {
-          return decodeURIComponent(urlParam);
-        }
-
-        const qParam = urlObj.searchParams.get('q');
-        if (qParam && qParam.startsWith('http')) {
-          return decodeURIComponent(qParam);
-        }
       } catch {
-        return url;
+        // ignora erros
       }
     }
 
+    // Se a URL não começa com http, tenta normalizar
+    if (!/^https?:\/\//i.test(url)) {
+      url = 'https://' + url;
+    }
+
+    // Retorna a URL limpa, sem decodificações extras
     return url;
   }
 
-  /**
-   * Extrai apenas o domínio de um texto de cite, removendo paths e caracteres especiais
-   * Exemplo: "example.com › path › to › page" -> "example.com"
-   */
-  private static extractDomainFromCite(citeText: string): string | null {
-    // Remove HTML entities e limpa o texto
-    const cleaned = this.cleanText(citeText);
-    
-    // Remove common separators used in breadcrumbs (›, /, >, etc.)
-    // e pega apenas a primeira parte (o domínio)
-    const domainPart = cleaned.split(/\s*[›>\/]\s*/)[0].trim();
-    
-    // Valida se parece um domínio válido (tem pelo menos um ponto e não tem espaços)
-    if (domainPart && domainPart.includes('.') && !domainPart.includes(' ')) {
-      // Remove trailing dots or commas
-      return domainPart.replace(/[.,]+$/, '');
+
+  private static safeDecode(value: string): string {
+    try {
+      const decoded = decodeURIComponent(value);
+      if (/^https?:\/\//i.test(decoded)) {
+        return decoded;
+      }
+    } catch {
+      // Ignora erros de decoding
     }
-    
-    return null;
+
+    return value
+      .replace(/&amp;/g, '&')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"')
+      .replace(/&apos;/g, "'");
   }
+
 }
