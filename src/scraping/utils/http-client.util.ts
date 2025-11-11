@@ -3,9 +3,9 @@ import * as http from 'http';
 import * as https from 'https';
 import * as zlib from 'zlib';
 import {
-    HTTP_DEFAULT_HEADERS,
-    HTTP_DEFAULT_TIMEOUT,
-    HTTP_MAX_REDIRECTS,
+  HTTP_DEFAULT_HEADERS,
+  HTTP_DEFAULT_TIMEOUT,
+  HTTP_MAX_REDIRECTS,
 } from '../../config';
 
 export class HttpClient {

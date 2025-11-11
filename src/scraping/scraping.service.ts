@@ -6,9 +6,10 @@ import { HtmlParser, HttpClient, SearchUrlBuilder } from './utils';
 @Injectable()
 export class ScrapingService {
   async scrapeBingResults(dto: ScrapeRequestDto): Promise<ScrapeResponseDto> {
-    const { searchTerm } = dto;
+    const { searchTerm, limit } = dto;
 
-    const url = SearchUrlBuilder.buildUrl(searchTerm);
+    // Usa o limit do DTO se fornecido, caso contrário usa o padrão
+    const url = SearchUrlBuilder.buildUrl(searchTerm, limit);
     const html = await HttpClient.fetchHtml(url, 5);
 
     const results = HtmlParser.extractResults(html);
